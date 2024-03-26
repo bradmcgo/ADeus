@@ -35,12 +35,11 @@ interface Choice {
 // Current models available
 type ModelName = "nousresearch/nous-capybara-34b" | "mistral" | "gpt-4-0125-preview";
 
-
 const openaiClient = new OpenAI({
   apiKey: Deno.env.get("OPENAI_API_KEY"),
 });
 const useOpenRouter = Boolean(Deno.env.get("OPENROUTER_API_KEY")); // Use OpenRouter if API key is available
-const useOllama = Boolean(Deno.env.get("OLLAMA_BASE_URL")); // Use Ollama if OLLAMA_BASE_URL is available
+const useOllama = Boolean("https://b2f0-96-245-110-249.ngrok-free.app/v1"); // Use Ollama if OLLAMA_BASE_URL is available
 
 async function* generateResponse(
   useOpenRouter: boolean,
@@ -58,7 +57,7 @@ async function* generateResponse(
     modelName = "nousresearch/nous-capybara-34b";
   } else if (useOllama) {
     client = new OpenAI({
-      baseURL: Deno.env.get("OLLAMA_BASE_URL"),
+      baseURL: "https://b2f0-96-245-110-249.ngrok-free.app/v1",
       apiKey: "ollama"
     });
     modelName = "mistral"; 
@@ -84,14 +83,34 @@ async function getRelevantRecords(
   messageHistory: Message[],
 ): Promise<Message[]> {
 
-  
-  // Embed the last messageHistory message using OpenAI's embeddings API
-  const embeddingsResponse = await openaiClient.embeddings.create({
-    model: "text-embedding-3-small",
-    input: messageHistory[messageHistory.length - 1].content,
-  });
+  let embeddings
+  const flattenedData = messageHistory[messageHistory.length - 1].content
+  console.log(flattenedData)
+  try {
+      const response = await fetch(Deno.env.get("EMBEDDINGS_BASE_URL"), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ flattenedData })
+      });
+      
+      if (!response.ok) {
+          throw new Error('Failed to fetch embeddings');
+      }
 
-  const embeddings = embeddingsResponse.data[0].embedding;
+      const data = await response.json();
+      console.log(data.embeddings);
+      embeddings = data.embeddings
+  } catch (error) {
+      console.error('Error:', error);
+  }
+
+  // Embed the last messageHistory message using OpenAI's embeddings API
+  // const embeddingsResponse = await openaiClient.embeddings.create({
+  //   model: "text-embedding-3-small",
+  //   input: messageHistory[messageHistory.length - 1].content,
+  // });
+
+  // embeddings = embeddingsResponse.data[0].embedding;
   
   console.log(messageHistory[messageHistory.length - 1]);
 
