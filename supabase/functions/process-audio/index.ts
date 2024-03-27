@@ -61,9 +61,7 @@ const processAudio = async (req: Request) => {
     const data = await response.json();
     console.log("Transcript data:", data.transcription);
     transcript =  data.transcription;
-  
-    console.log("transcripttt:", transcript)
-  
+    
 
       // const transcriptResponse = await openaiClient.audio.transcriptions.create({
         //   file: await toFile(wavFile, filenameTimestamp),
