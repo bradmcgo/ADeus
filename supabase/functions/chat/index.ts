@@ -39,7 +39,7 @@ const openaiClient = new OpenAI({
   apiKey: Deno.env.get("OPENAI_API_KEY"),
 });
 const useOpenRouter = Boolean(Deno.env.get("OPENROUTER_API_KEY")); // Use OpenRouter if API key is available
-const useOllama = Boolean("https://b2f0-96-245-110-249.ngrok-free.app/v1"); // Use Ollama if OLLAMA_BASE_URL is available
+const useOllama = Boolean("OLLAMA_BASE_URL"); // Use Ollama if OLLAMA_BASE_URL is available
 
 async function* generateResponse(
   useOpenRouter: boolean,
