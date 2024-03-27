@@ -57,7 +57,7 @@ async function* generateResponse(
     modelName = "nousresearch/nous-capybara-34b";
   } else if (useOllama) {
     client = new OpenAI({
-      baseURL: "https://b2f0-96-245-110-249.ngrok-free.app/v1",
+      baseURL: Deno.env.get("OLLAMA_BASE_URL"),
       apiKey: "ollama"
     });
     modelName = "mistral"; 
