@@ -42,7 +42,6 @@ def transcribe():
         filename_with_timestamp = f"{timestamp}_{filename}"
         save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename_with_timestamp)
         file.save(save_path)
-        transcription = transcribe_audio(save_path)
 
         # Boost the volume before transcribing
         boost_volume(save_path, decibels=50)  # Adjust the decibels as necessary
